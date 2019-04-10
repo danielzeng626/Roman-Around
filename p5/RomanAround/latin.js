@@ -3,8 +3,9 @@ let size = {
 	width: window.innerWidth || document.body.clientWidth,
 	height: window.innerHeight || document.body.clientHeight
 }
+let mX, mY;
 let scene = "intro";
-let clicked = false;
+let clicked = false, mobilePressed = false, pMobile = false;
 let t = 0;
 /*intro variables*/
 let greetX = size.width + 200, greets = ["Hello", "Salve", "Welcome to " + TITLE, "By Dhruv, Andrew, Jing, and Daniel"], greetNum = 0, greetSize = [50, 50, 50, 30];
@@ -929,8 +930,8 @@ function diamond(x, y, w) {
 	quad(x - d, y, x, y - d, x + d, y, x, y + d);
 }
 function overDiamond(x, y, w) {
-	let aX = (mouseX - x) * cos(45) - (mouseY - y) * sin(45) + x;
-	let aY = (mouseX - x) * sin(45) + (mouseY - y) * cos(45) + y;
+	let aX = (mX - x) * cos(45) - (mY - y) * sin(45) + x;
+	let aY = (mX - x) * sin(45) + (mY - y) * cos(45) + y;
 	return aX > x - w / 2 && aX < x + w / 2 && aY > y - w / 2 && aY < y + w / 2;
 }
 class Button {
@@ -1119,22 +1120,22 @@ function findForms(value){
 	return out.length === 0 ? ["", "No forms found"] : out;
 }
 function detectMouse(x, y, w, h, r1=0, r2=r1, r3=r1, r4=r1){
-    if(dist(x+r1, y+r1, mouseX, mouseY) <= r1 || dist(x+w-r2, y+r2, mouseX, mouseY) <= r2 || dist(x+w-r3, y+h-r3, mouseX, mouseY) <= r3 || dist(x+r4, y+h-r4, mouseX, mouseY) <= r4){
+    if(dist(x+r1, y+r1, mX, mY) <= r1 || dist(x+w-r2, y+r2, mX, mY) <= r2 || dist(x+w-r3, y+h-r3, mX, mY) <= r3 || dist(x+r4, y+h-r4, mX, mY) <= r4){
         return true;
     }
-    if(mouseX >= x+r1 && mouseX <= x+w-r2 && mouseY >= y && mouseY <= y+r1){
+    if(mX >= x+r1 && mX <= x+w-r2 && mY >= y && mY <= y+r1){
         return true;
     }
-    if(mouseX >= x+r4 && mouseX <= x+w-r3 && mouseY >= y+h-r3 && mouseY <= y+h){
+    if(mX >= x+r4 && mX <= x+w-r3 && mY >= y+h-r3 && mY <= y+h){
         return true;
     }
-    if(mouseX >= x+w-r2 && mouseX <= x+w && mouseY >= y+r2 && mouseY <= y+h-r3){
+    if(mX >= x+w-r2 && mX <= x+w && mY >= y+r2 && mY <= y+h-r3){
         return true;
     }
-    if(mouseX >= x && mouseX <= x+r4 && mouseY >= y+r1 && mouseY <= y+h-r4){
+    if(mX >= x && mX <= x+r4 && mY >= y+r1 && mY <= y+h-r4){
         return true;
     }
-    if(mouseX >= x+r4 && mouseX <= x+w-r2 && mouseY >= y+r1 && mouseY <= y+h-r3){
+    if(mX >= x+r4 && mX <= x+w-r2 && mY >= y+r1 && mY <= y+h-r3){
         return true;
     }
     return false;
@@ -1710,6 +1711,12 @@ function principleParts(stems, irreg){
 	return [stems[0] + (stems[3] >= 3 ? "io" : stems[3] === 1 ? "eo" : "o"), stems[0] + presInf[stems[3]], stems[1] + "i", stems[2] === "" ? "--" : stems[2] + "us"];
 }
 function draw() {
+	mobilePressed = touches[0];
+	mX = touches[0] | mouseX;
+	mY = touches[1] | mouseY;
+	if(!mobilePressed && pMobile){
+		clicked = true;
+	}
 	cursor(ARROW);
   image(back, 0, 0);
 	switch (scene){
@@ -1738,4 +1745,5 @@ function draw() {
 	textSize(25);
 	textAlign(RIGHT, RIGHT);
 	text("Luneborn Technologies", size.width-30, size.height-30);
+	pMobile = mobilePressed;
 }
